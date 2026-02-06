@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Membler.Domain/Membler.Domain.csproj" Id="06309da2-fc91-437a-8097-bf4d5004382d" />
+  <Project Path="Membler.Infrastructure/Membler.Infrastructure.csproj" />
+  <Project Path="ScratchPad/ScratchPad.csproj" Id="e73e13eb-e698-424d-9e27-75d1074755f5" />
+</Solution>
