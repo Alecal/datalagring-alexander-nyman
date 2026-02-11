@@ -7,4 +7,10 @@
     <UserSecretsId>1cc68867-8895-4969-a8d1-6b4e2871109e</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Membler.Application\Membler.Application.csproj" />
+    <ProjectReference Include="..\Membler.Domain\Membler.Domain.csproj" />
+    <ProjectReference Include="..\Membler.Infrastructure\Membler.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

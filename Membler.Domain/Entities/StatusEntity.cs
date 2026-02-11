@@ -1,6 +1,6 @@
 ﻿namespace Membler.Domain.Entities;
 
-public class Status
+public class StatusEntity
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = null!;

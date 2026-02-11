@@ -1,6 +1,6 @@
 ﻿namespace Membler.Domain.Entities;
 
-public class Enrollment
+public class EnrollmentEntity
 {
     public Guid Id { get; set; }
     public Guid ParticipantId { get; set; }
@@ -8,7 +8,7 @@ public class Enrollment
     public DateTime EnrollmentDate { get; set; }
     public Guid StatusId { get; set; }
 
-    public User Participant { get; set; } = null!;
-    public CourseOffering Offering { get; set; } = null!;
-    public Status Status { get; set; } = null!;
+    public UserEntity Participant { get; set; } = null!;
+    public CourseOfferingEntity Offering { get; set; } = null!;
+    public StatusEntity Status { get; set; } = null!;
 }

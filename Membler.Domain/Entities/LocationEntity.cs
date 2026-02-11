@@ -1,6 +1,6 @@
 ﻿namespace Membler.Domain.Entities;
 
-public class Location
+public class LocationEntity
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = null!;

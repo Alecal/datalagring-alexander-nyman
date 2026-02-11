@@ -1,10 +1,10 @@
 ﻿namespace Membler.Domain.Entities;
 
-public class Course
+public class CourseEntity
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = null!;
     public string? Description { get; set; }
 
-    public ICollection<CourseOffering> Offerings { get; set; } = new List<CourseOffering>();
+    public ICollection<CourseOfferingEntity> Offerings { get; set; } = new List<CourseOfferingEntity>();
 }

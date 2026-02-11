@@ -1,6 +1,6 @@
 ﻿namespace Membler.Domain.Entities;
 
-public class Lesson
+public class LessonEntity
 {
     public Guid Id { get; set; }
     public Guid OfferingId { get; set; }
@@ -9,6 +9,6 @@ public class Lesson
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }
 
-    public CourseOffering Offering { get; set; } = null!;
-    public Location Location { get; set; } = null!;
+    public CourseOfferingEntity Offering { get; set; } = null!;
+    public LocationEntity Location { get; set; } = null!;
 }
