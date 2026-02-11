@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Membler.Application\Membler.Application.csproj" />
     <ProjectReference Include="..\Membler.Domain\Membler.Domain.csproj" />
   </ItemGroup>
 

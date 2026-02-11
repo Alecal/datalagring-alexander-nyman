@@ -12,4 +12,8 @@
     <Folder Include="Services\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Membler.Domain\Membler.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
