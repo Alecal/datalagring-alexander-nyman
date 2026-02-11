@@ -1,5 +1,7 @@
 <Solution>
+  <Project Path="Membler.Application/Membler.Application.csproj" Id="8a8f8ff1-b8b0-4693-a9e7-333653f150be" />
   <Project Path="Membler.Domain/Membler.Domain.csproj" Id="06309da2-fc91-437a-8097-bf4d5004382d" />
   <Project Path="Membler.Infrastructure/Membler.Infrastructure.csproj" />
-  <Project Path="ScratchPad/ScratchPad.csproj" Id="e73e13eb-e698-424d-9e27-75d1074755f5" />
+  <Project Path="Membler.Presentation.Api/Membler.Presentation.Api.csproj" Id="810f7745-272e-40c9-afcd-71cbb3d2c8cb" />
+  <Project Path="Membler.Tests/Membler.Tests.csproj" Id="fea8e06a-d308-418f-945f-adc4872d55a6" />
 </Solution>

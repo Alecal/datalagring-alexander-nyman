@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Membler.Domain.Entities;
 using Membler.Domain.Models;
 using Membler.Infrastructure.Data;
 
