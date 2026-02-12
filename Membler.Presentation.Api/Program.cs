@@ -1,7 +1,10 @@
 ﻿using Membler.Infrastructure.Data;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddOpenApi();
 
 builder.Services.AddDbContext<MemblerDbContext>(options =>
 {
@@ -12,6 +15,11 @@ builder.Services.AddDbContext<MemblerDbContext>(options =>
 });
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+}
 
 app.UseHttpsRedirection();
 
