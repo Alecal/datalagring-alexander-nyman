@@ -18,4 +18,8 @@
     <ProjectReference Include="..\Membler.Domain\Membler.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Repositories\" />
+  </ItemGroup>
+
 </Project>
