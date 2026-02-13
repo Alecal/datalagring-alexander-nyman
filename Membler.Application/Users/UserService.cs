@@ -31,7 +31,9 @@ public class UserService
             Email = user.Email,
             FirstName = user.FirstName,
             LastName = user.LastName,
-            CreatedAt = user.CreatedAt
+            CreatedAt = user.CreatedAt,
+            IsInstructor = user.Instructor != null,
+            Bio = user.Instructor?.Bio
         };
     }
 
@@ -47,7 +49,9 @@ public class UserService
                 Email = u.Email,
                 FirstName = u.FirstName,
                 LastName = u.LastName,
-                CreatedAt = u.CreatedAt
+                CreatedAt = u.CreatedAt,
+                IsInstructor = u.Instructor != null,
+                Bio = u.Instructor?.Bio
             })
             .ToList();
     }

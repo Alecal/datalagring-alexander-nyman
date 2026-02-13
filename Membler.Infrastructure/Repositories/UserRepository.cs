@@ -17,12 +17,14 @@ public class UserRepository : IUserRepository
     public async Task<UserEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await _dbContext.Users
+            .Include(u => u.Instructor)
             .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
     }
 
     public async Task<IReadOnlyList<UserEntity>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         return await _dbContext.Users
+            .Include(u => u.Instructor)
             .ToListAsync(cancellationToken);
     }
 
