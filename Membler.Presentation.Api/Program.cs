@@ -46,4 +46,11 @@ app.MapPost("/api/users", async (UserService service, UserDto request) =>
     return Results.Created($"/api/users/{created.Id}", created);
 });
 
+// GET /api/users/{id} - HÄMTA MED ID!
+app.MapGet("/api/users/{id:guid}", async (UserService service, Guid id) =>
+{
+    var user = await service.GetByIdAsync(id);
+    return user is null ? Results.NotFound() : Results.Ok(user);
+});
+
 app.Run();

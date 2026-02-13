@@ -13,6 +13,21 @@ public class UserService
         _users = users;
     }
 
+    public async Task<UserDto?> GetByIdAsync(Guid id)
+    {
+        var user = await _users.GetByIdAsync(id);
+        if (user is null) return null;
+
+        return new UserDto
+        {
+            Id = user.Id,
+            Email = user.Email,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            CreatedAt = user.CreatedAt
+        };
+    }
+
     public async Task<IReadOnlyList<UserDto>> GetAllAsync()
     {
         var entities = await _users.GetAllAsync();

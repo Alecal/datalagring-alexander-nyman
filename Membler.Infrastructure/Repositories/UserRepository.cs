@@ -1,4 +1,5 @@
 ﻿using Membler.Domain.Entities;
+using Membler.Domain.Interfaces;
 using Membler.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,19 @@ public class UserRepository : IUserRepository
         _dbContext = dbContext;
     }
 
+    public async Task<UserEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Users
+            .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<UserEntity>> GetAllAsync(CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Users
+            .ToListAsync(cancellationToken);
+    }
+
+
     public async Task AddAsync(UserEntity user, CancellationToken cancellationToken = default)
     {
         await _dbContext.Users.AddAsync(user, cancellationToken);
@@ -25,21 +39,9 @@ public class UserRepository : IUserRepository
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-
-
-    public Task<IReadOnlyList<UserEntity>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task DeleteAsync(UserEntity user, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        _dbContext.Users.Remove(user);
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
-
-    public Task<UserEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task DeleteAsync(UserEntity user, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
 }
