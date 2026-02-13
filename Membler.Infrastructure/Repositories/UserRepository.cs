@@ -26,7 +26,6 @@ public class UserRepository : IUserRepository
             .ToListAsync(cancellationToken);
     }
 
-
     public async Task AddAsync(UserEntity user, CancellationToken cancellationToken = default)
     {
         await _dbContext.Users.AddAsync(user, cancellationToken);
