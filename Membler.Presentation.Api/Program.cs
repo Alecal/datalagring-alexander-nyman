@@ -8,9 +8,16 @@ using Membler.Infrastructure.Repositories;
 using Membler.Application.Users;
 using Membler.Application.DTO;
 
+using Membler.Domain.Interfaces;
+using Membler.Infrastructure.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
+// USER
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+// INSTRUCTOR
+builder.Services.AddScoped<IInstructorRepository, InstructorRepository>();
+
 builder.Services.AddScoped<UserService>();
 
 builder.Services.AddOpenApi();

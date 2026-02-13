@@ -11,10 +11,12 @@ namespace Membler.Application.Users;
 public class UserService
 {
     private readonly IUserRepository _users;
+    private readonly IInstructorRepository _instructors;
 
-    public UserService(IUserRepository users)
+    public UserService(IUserRepository users, IInstructorRepository instructors)
     {
         _users = users;
+        _instructors = instructors;
     }
 
     // HÄMTA EN ANVÄNDARE MED ID
@@ -50,7 +52,7 @@ public class UserService
             .ToList();
     }
 
-    // SKAPA NY ANVÄNDARE
+    // SKAPA NY ANVÄNDARE OCH EVENTUELLT LÄRARE
     public async Task<UserDto> CreateAsync(UserDto request)
     {
         var user = new UserEntity
@@ -64,13 +66,27 @@ public class UserService
 
         await _users.AddAsync(user);
 
+        // om avändaren ska vara lärare
+        if (request.IsInstructor)
+        {
+            var instructor = new InstructorEntity
+            {
+                UserId = user.Id,
+                Bio = request.Bio
+            };
+
+            await _instructors.AddAsync(instructor);
+        }
+
         return new UserDto
         {
             Id = user.Id,
             Email = user.Email,
             FirstName = user.FirstName,
             LastName = user.LastName,
-            CreatedAt = user.CreatedAt
+            CreatedAt = user.CreatedAt,
+            IsInstructor = request.IsInstructor,
+            Bio = request.Bio
         };
     }
 
