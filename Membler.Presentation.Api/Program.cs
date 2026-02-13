@@ -1,6 +1,7 @@
 ﻿using Membler.Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,5 +23,21 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.MapGet("/api/users", async (MemblerDbContext db) =>
+{
+    var users = await db.Users
+        .Select(u => new
+        {
+            u.Id,
+            u.Email,
+            u.FirstName,
+            u.LastName,
+            u.CreatedAt
+        })
+        .ToListAsync();
+
+    return Results.Ok(users);
+});
 
 app.Run();
