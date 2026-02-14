@@ -1,15 +1,13 @@
-﻿using Membler.Infrastructure.Data;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
-using System.Net.Security;
+﻿using Membler.Application.DTO;
 
-using Membler.Domain.Interfaces;
-using Membler.Infrastructure.Repositories;
+using Membler.Application.Courses;
 using Membler.Application.Users;
-using Membler.Application.DTO;
 
 using Membler.Domain.Interfaces;
+using Membler.Infrastructure.Data;
 using Membler.Infrastructure.Repositories;
+
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +15,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 // INSTRUCTOR
 builder.Services.AddScoped<IInstructorRepository, InstructorRepository>();
+// COURSE
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 
+builder.Services.AddScoped<CourseService>();
 builder.Services.AddScoped<UserService>();
 
 builder.Services.AddOpenApi();
@@ -39,7 +40,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-
+//                       USERS API ENDPOINTS
 // GET /api/users
 app.MapGet("/api/users", async (UserService service) =>
 {
@@ -74,6 +75,43 @@ app.MapPut("/api/users/{id:guid}", async (UserService service, Guid id, UserDto 
 
 // DELETE /api/users/{id} - TA BORT MED ID!
 app.MapDelete("/api/users/{id:guid}", async (UserService service, Guid id) =>
+{
+    var deleted = await service.DeleteAsync(id);
+    return deleted ? Results.NoContent() : Results.NotFound();
+});
+
+
+//                        COURSES API ENDPOINTS
+// GET /api/courses
+app.MapGet("/api/courses", async (CourseService service) =>
+{
+    var courses = await service.GetAllAsync();
+    return Results.Ok(courses);
+});
+
+// GET /api/courses/{id}
+app.MapGet("/api/courses/{id:guid}", async (CourseService service, Guid id) =>
+{
+    var course = await service.GetByIdAsync(id);
+    return course is null ? Results.NotFound() : Results.Ok(course);
+});
+
+// POST /api/courses
+app.MapPost("/api/courses", async (CourseService service, CourseDto request) =>
+{
+    var created = await service.CreateAsync(request);
+    return Results.Created($"/api/courses/{created.Id}", created);
+});
+
+// PUT /api/courses/{id}
+app.MapPut("/api/courses/{id:guid}", async (CourseService service, Guid id, CourseDto request) =>
+{
+    var updated = await service.UpdateAsync(id, request);
+    return updated is null ? Results.NotFound() : Results.Ok(updated);
+});
+
+// DELETE /api/courses/{id}
+app.MapDelete("/api/courses/{id:guid}", async (CourseService service, Guid id) =>
 {
     var deleted = await service.DeleteAsync(id);
     return deleted ? Results.NoContent() : Results.NotFound();
