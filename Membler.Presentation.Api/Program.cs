@@ -2,6 +2,7 @@ using Membler.Application.DTO;
 
 using Membler.Application.CourseOfferings;
 using Membler.Application.Courses;
+using Membler.Application.Enrollments;
 using Membler.Application.Instructors;
 using Membler.Application.Users;
 
@@ -28,8 +29,11 @@ builder.Services.AddScoped<IInstructorRepository, InstructorRepository>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 // COURSE OFFERING
 builder.Services.AddScoped<ICourseOfferingRepository, CourseOfferingRepository>();
+// ENROLLMENT
+builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
 
 builder.Services.AddScoped<CourseService>();
+builder.Services.AddScoped<EnrollmentService>();
 builder.Services.AddScoped<CourseOfferingService>();
 builder.Services.AddScoped<InstructorService>();
 builder.Services.AddScoped<UserService>();
@@ -181,6 +185,45 @@ app.MapPut("/api/course-offerings/{id:guid}", async (CourseOfferingService servi
 });
 
 app.MapDelete("/api/course-offerings/{id:guid}", async (CourseOfferingService service, Guid id) =>
+{
+    var deleted = await service.DeleteAsync(id);
+    return deleted ? Results.NoContent() : Results.NotFound();
+});
+
+//                        ENROLLMENTS API ENDPOINTS
+app.MapGet("/api/enrollments", async (EnrollmentService service) =>
+{
+    var list = await service.GetAllAsync();
+    return Results.Ok(list);
+});
+
+app.MapGet("/api/enrollments/{id:guid}", async (EnrollmentService service, Guid id) =>
+{
+    var enrollment = await service.GetByIdAsync(id);
+    return enrollment is null ? Results.NotFound() : Results.Ok(enrollment);
+});
+
+app.MapGet("/api/course-offerings/{offeringId:guid}/enrollments", async (EnrollmentService service, Guid offeringId) =>
+{
+    var list = await service.GetByOfferingIdAsync(offeringId);
+    return Results.Ok(list);
+});
+
+app.MapPost("/api/enrollments", async (EnrollmentService service, CreateEnrollmentRequest request) =>
+{
+    var created = await service.CreateAsync(request);
+    if (created is null)
+        return Results.BadRequest("Kurstillfället finns inte, är fullt eller deltagaren är redan registrerad.");
+    return Results.Created($"/api/enrollments/{created.Id}", created);
+});
+
+app.MapPut("/api/enrollments/{id:guid}", async (EnrollmentService service, Guid id, EnrollmentDto request) =>
+{
+    var updated = await service.UpdateAsync(id, request);
+    return updated is null ? Results.NotFound() : Results.Ok(updated);
+});
+
+app.MapDelete("/api/enrollments/{id:guid}", async (EnrollmentService service, Guid id) =>
 {
     var deleted = await service.DeleteAsync(id);
     return deleted ? Results.NoContent() : Results.NotFound();
