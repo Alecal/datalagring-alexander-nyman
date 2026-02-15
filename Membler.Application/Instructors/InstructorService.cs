@@ -1,4 +1,5 @@
 using Membler.Application.DTO;
+using Membler.Domain.Entities;
 using Membler.Domain.Interfaces;
 
 namespace Membler.Application.Instructors;
@@ -6,10 +7,12 @@ namespace Membler.Application.Instructors;
 public class InstructorService
 {
     private readonly IInstructorRepository _instructors;
+    private readonly IUserRepository _users;
 
-    public InstructorService(IInstructorRepository instructors)
+    public InstructorService(IInstructorRepository instructors, IUserRepository users)
     {
         _instructors = instructors;
+        _users = users;
     }
 
     public async Task<IReadOnlyList<InstructorDto>> GetAllAsync()
@@ -23,5 +26,24 @@ public class InstructorService
                 LastName = i.User.LastName
             })
             .ToList();
+    }
+
+    /// gör en bef. användare till lärare
+    public async Task<InstructorDto?> CreateAsync(Guid userId)
+    {
+        var user = await _users.GetByIdAsync(userId);
+        if (user is null) return null;
+        var existing = await _instructors.GetByIdAsync(userId);
+        if (existing is not null) return null;
+
+        var instructor = new InstructorEntity { UserId = userId };
+        await _instructors.AddAsync(instructor);
+
+        return new InstructorDto
+        {
+            UserId = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName
+        };
     }
 }

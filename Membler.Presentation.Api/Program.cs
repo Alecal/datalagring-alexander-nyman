@@ -112,6 +112,13 @@ app.MapGet("/api/instructors", async (InstructorService service) =>
     return Results.Ok(list);
 });
 
+// POST /api/instructors – GÖR EN ANVÄNDARE TILL LÄRARE
+app.MapPost("/api/instructors", async (InstructorService service, CreateInstructorRequest request) =>
+{
+    var created = await service.CreateAsync(request.UserId);
+    return created is null ? Results.BadRequest("Användaren finns inte eller är redan registrerad som lärare.") : Results.Created($"/api/instructors/{created.UserId}", created);
+});
+
 //                        COURSES API ENDPOINTS
 // GET /api/courses
 app.MapGet("/api/courses", async (CourseService service) =>

@@ -1,5 +1,4 @@
 using Membler.Domain.Entities;
-
 namespace Membler.Domain.Interfaces;
 
 public interface IInstructorRepository
