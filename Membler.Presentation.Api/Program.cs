@@ -123,6 +123,28 @@ app.MapPost("/api/instructors", async (InstructorService service, CreateInstruct
     return created is null ? Results.BadRequest("Användaren finns inte eller är redan registrerad som lärare.") : Results.Created($"/api/instructors/{created.UserId}", created);
 });
 
+
+// GET /api/instructors/{userId}
+app.MapGet("/api/instructors/{userId:guid}", async (InstructorService service, Guid userId) =>
+{
+    var instructor = await service.GetByIdAsync(userId);
+    return instructor is null ? Results.NotFound() : Results.Ok(instructor);
+});
+
+// PUT /api/instructors/{userId}
+app.MapPut("/api/instructors/{userId:guid}", async (InstructorService service, Guid userId, InstructorDto request) =>
+{
+    var updated = await service.UpdateAsync(userId, request);
+    return updated is null ? Results.NotFound() : Results.Ok(updated);
+});
+
+// DELETE /api/instructors/{userId}
+app.MapDelete("/api/instructors/{userId:guid}", async (InstructorService service, Guid userId) =>
+{
+    var deleted = await service.DeleteAsync(userId);
+    return deleted ? Results.NoContent() : Results.NotFound();
+});
+
 //                        COURSES API ENDPOINTS
 // GET /api/courses
 app.MapGet("/api/courses", async (CourseService service) =>

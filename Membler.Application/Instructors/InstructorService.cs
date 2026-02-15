@@ -15,20 +15,21 @@ public class InstructorService
         _users = users;
     }
 
+    public async Task<InstructorDto?> GetByIdAsync(Guid userId)
+    {
+        var entity = await _instructors.GetByIdAsync(userId);
+        return entity is null ? null : MapToDto(entity);
+    }
+
     public async Task<IReadOnlyList<InstructorDto>> GetAllAsync()
     {
         var entities = await _instructors.GetAllAsync();
-        return entities
-            .Select(i => new InstructorDto
-            {
-                UserId = i.UserId,
-                FirstName = i.User.FirstName,
-                LastName = i.User.LastName
-            })
-            .ToList();
+        return entities.Select(MapToDto).ToList();
     }
 
+
     /// gör en bef. användare till lärare
+
     public async Task<InstructorDto?> CreateAsync(Guid userId)
     {
         var user = await _users.GetByIdAsync(userId);
@@ -43,7 +44,36 @@ public class InstructorService
         {
             UserId = user.Id,
             FirstName = user.FirstName,
-            LastName = user.LastName
+            LastName = user.LastName,
+            Bio = null
+        };
+    }
+
+    public async Task<InstructorDto?> UpdateAsync(Guid userId, InstructorDto request)
+    {
+        var entity = await _instructors.GetByIdAsync(userId);
+        if (entity is null) return null;
+        entity.Bio = request.Bio;
+        await _instructors.UpdateAsync(entity);
+        return MapToDto(entity);
+    }
+
+    public async Task<bool> DeleteAsync(Guid userId)
+    {
+        var entity = await _instructors.GetByIdAsync(userId);
+        if (entity is null) return false;
+        await _instructors.DeleteAsync(entity);
+        return true;
+    }
+
+    private static InstructorDto MapToDto(InstructorEntity i)
+    {
+        return new InstructorDto
+        {
+            UserId = i.UserId,
+            FirstName = i.User.FirstName,
+            LastName = i.User.LastName,
+            Bio = i.Bio
         };
     }
 }

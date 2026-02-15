@@ -6,4 +6,7 @@ public interface IInstructorRepository
     Task<InstructorEntity?> GetByIdAsync(Guid userId, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<InstructorEntity>> GetAllAsync(CancellationToken cancellationToken = default);
     Task AddAsync(InstructorEntity instructor, CancellationToken cancellationToken = default);
+    Task UpdateAsync(InstructorEntity instructor, CancellationToken cancellationToken = default);
+    Task DeleteAsync(InstructorEntity instructor, CancellationToken cancellationToken = default);
+
 }

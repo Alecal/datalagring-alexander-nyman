@@ -13,7 +13,6 @@ public class InstructorRepository : IInstructorRepository
     {
         _dbContext = dbContext;
     }
-
     public async Task<InstructorEntity?> GetByIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         return await _dbContext.Instructors
@@ -31,6 +30,18 @@ public class InstructorRepository : IInstructorRepository
     public async Task AddAsync(InstructorEntity instructor, CancellationToken cancellationToken = default)
     {
         await _dbContext.Instructors.AddAsync(instructor, cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateAsync(InstructorEntity instructor, CancellationToken cancellationToken = default)
+    {
+        _dbContext.Instructors.Update(instructor);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task DeleteAsync(InstructorEntity instructor, CancellationToken cancellationToken = default)
+    {
+        _dbContext.Instructors.Remove(instructor);
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }
