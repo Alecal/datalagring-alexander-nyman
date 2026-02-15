@@ -13,6 +13,7 @@ using Membler.Infrastructure.Repositories;
 
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +55,7 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddMemoryCache();
 builder.Services.AddOpenApi();
 
 builder.Services.AddDbContext<MemblerDbContext>(options =>
@@ -187,11 +189,15 @@ app.MapDelete("/api/expertises/{id:guid}", async (ExpertiseService service, Guid
 });
 
 //                        COURSES API ENDPOINTS
-// GET /api/courses
-app.MapGet("/api/courses", async (CourseService service) =>
+// GET /api/courses (cachad 60 s)
+app.MapGet("/api/courses", async (CourseService service, IMemoryCache cache) =>
 {
-    var courses = await service.GetAllAsync();
-    return Results.Ok(courses);
+    var courses = await cache.GetOrCreateAsync("api:courses:list", async entry =>
+    {
+        entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(60);
+        return await service.GetAllAsync();
+    });
+    return Results.Ok(courses!);
 });
 
 // GET /api/courses/count

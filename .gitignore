@@ -353,6 +353,9 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 
+# Lokala inställningar med connection string etc. (använd User Secrets istället)
+Membler.Presentation.Api/appsettings.Development.json
+
 # Backup folder for Package Reference Convert tool in Visual Studio 2017
 MigrationBackup/
 

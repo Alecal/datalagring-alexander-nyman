@@ -1,4 +1,4 @@
-﻿namespace Membler.Domain.Entities;
+namespace Membler.Domain.Entities;
 
 public class StatusEntity
 {

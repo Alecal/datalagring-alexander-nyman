@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Membler.Domain.Entities;
 
 namespace Membler.Infrastructure.Data;

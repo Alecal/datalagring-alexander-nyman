@@ -28,9 +28,11 @@ public class CourseRepository : ICourseRepository
     // Räkna antal kurser med rå SQL
     public async Task<int> GetCountAsync(CancellationToken cancellationToken = default)
     {
-        return await _dbContext.Database
-            .SqlQueryRaw<int>("SELECT COUNT(*) FROM \"Courses\"")
-            .FirstOrDefaultAsync(cancellationToken);
+        var result = await _dbContext.Database
+            .SqlQueryRaw<long>("SELECT COUNT(*) AS \"Value\" FROM \"Courses\"")
+            .SingleAsync(cancellationToken);
+
+        return (int)result;
     }
 
     public async Task AddAsync(CourseEntity course, CancellationToken cancellationToken = default)

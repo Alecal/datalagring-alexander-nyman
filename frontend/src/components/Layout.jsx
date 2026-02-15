@@ -1,4 +1,7 @@
-import { Link, Outlet } from 'react-router-dom'
+import { Link, NavLink, Outlet } from 'react-router-dom'
+
+const navClass = ({ isActive }) =>
+  `font-medium ${isActive ? 'text-slate-900' : 'text-slate-600 hover:text-slate-900'}`
 
 function Layout() {
   return (
@@ -9,21 +12,11 @@ function Layout() {
             Membler
           </Link>
           <nav className="flex gap-6">
-            <Link to="/users" className="text-slate-600 hover:text-slate-900 font-medium">
-              Användare
-            </Link>
-            <Link to="/courses" className="text-slate-600 hover:text-slate-900 font-medium">
-              Kurser
-            </Link>
-            <Link to="/instructors" className="text-slate-600 hover:text-slate-900 font-medium">
-              Visa lärare
-            </Link>
-            <Link to="/course-offerings" className="text-slate-600 hover:text-slate-900 font-medium">
-              Kurstillfällen
-            </Link>
-            <Link to="/expertises" className="text-slate-600 hover:text-slate-900 font-medium">
-              Expertiser
-            </Link>
+            <NavLink to="/users" className={navClass}>Användare</NavLink>
+            <NavLink to="/courses" className={navClass}>Kurser</NavLink>
+            <NavLink to="/instructors" className={navClass}>Lärare</NavLink>
+            <NavLink to="/course-offerings" className={navClass}>Kurstillfällen</NavLink>
+            <NavLink to="/expertises" className={navClass}>Expertiser</NavLink>
           </nav>
         </div>
       </header>

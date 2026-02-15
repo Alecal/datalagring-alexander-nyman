@@ -8,6 +8,7 @@ const labelClass = 'block text-sm font-medium text-slate-700 mb-1'
 
 function Courses() {
   const [courses, setCourses] = useState([])
+  const [courseCount, setCourseCount] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [showCreateForm, setShowCreateForm] = useState(false)
@@ -16,8 +17,12 @@ function Courses() {
   const [submitting, setSubmitting] = useState(false)
 
   const loadCourses = () => {
-    get('/api/courses')
-      .then(setCourses)
+    setLoading(true)
+    Promise.all([get('/api/courses'), get('/api/courses/count')])
+      .then(([list, countData]) => {
+        setCourses(Array.isArray(list) ? list : [])
+        setCourseCount(countData?.count ?? null)
+      })
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false))
   }
@@ -51,7 +56,11 @@ function Courses() {
   return (
     <div className="max-w-2xl">
       <h1 className="text-3xl font-bold text-slate-800 mb-2">Kurser</h1>
-      <p className="text-slate-600 mb-8">Lista och hantera kurser. Skapa kurser som sedan kan användas för kurstillfällen.</p>
+      <p className="text-slate-600 mb-2">Lista och hantera kurser. Skapa kurser som sedan kan användas för kurstillfällen.</p>
+      {courseCount !== null && (
+        <p className="text-sm text-slate-500 mb-6">{courseCount} {courseCount === 1 ? 'kurs' : 'kurser'} totalt.</p>
+      )}
+      {courseCount === null && !loading && <div className="h-6 mb-6" />}
 
       {showCreateForm ? (
         <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm mb-8">
