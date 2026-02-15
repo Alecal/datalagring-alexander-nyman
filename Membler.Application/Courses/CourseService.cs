@@ -1,4 +1,4 @@
-﻿using Membler.Application.DTO;
+using Membler.Application.DTO;
 using Membler.Domain.Entities;
 using Membler.Domain.Interfaces;
 
@@ -43,7 +43,7 @@ public class CourseService
     }
 
     // SKAPA NY KURS
-    public async Task<CourseDto> CreateAsync(CourseDto request)
+    public async Task<CourseDto> CreateAsync(CreateCourseRequest request)
     {
         var course = new CourseEntity
         {

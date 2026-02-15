@@ -109,7 +109,7 @@ app.MapGet("/api/courses/{id:guid}", async (CourseService service, Guid id) =>
 });
 
 // POST /api/courses
-app.MapPost("/api/courses", async (CourseService service, CourseDto request) =>
+app.MapPost("/api/courses", async (CourseService service, CreateCourseRequest request) =>
 {
     var created = await service.CreateAsync(request);
     return Results.Created($"/api/courses/{created.Id}", created);
