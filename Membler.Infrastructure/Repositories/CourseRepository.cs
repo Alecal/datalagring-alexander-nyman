@@ -1,4 +1,4 @@
-﻿using Membler.Domain.Entities;
+using Membler.Domain.Entities;
 using Membler.Domain.Interfaces;
 using Membler.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +23,14 @@ public class CourseRepository : ICourseRepository
     public async Task<IReadOnlyList<CourseEntity>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         return await _dbContext.Courses.ToListAsync(cancellationToken);
+    }
+
+    // Räkna antal kurser med rå SQL
+    public async Task<int> GetCountAsync(CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Database
+            .SqlQueryRaw<int>("SELECT COUNT(*) FROM \"Courses\"")
+            .FirstOrDefaultAsync(cancellationToken);
     }
 
     public async Task AddAsync(CourseEntity course, CancellationToken cancellationToken = default)

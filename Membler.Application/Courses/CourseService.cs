@@ -27,6 +27,9 @@ public class CourseService
         };
     }
 
+    // Antal kurser (räknas med rå SQL i repository)
+    public async Task<int> GetCountAsync() => await _courses.GetCountAsync();
+
     // HÄMTA ALLA KURSER
     public async Task<IReadOnlyList<CourseDto>> GetAllAsync()
     {

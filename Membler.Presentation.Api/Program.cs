@@ -35,6 +35,8 @@ builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
 // EXPERTISE
 builder.Services.AddScoped<IExpertiseRepository, ExpertiseRepository>();
 
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 builder.Services.AddScoped<CourseService>();
 builder.Services.AddScoped<ExpertiseService>();
 builder.Services.AddScoped<EnrollmentService>();
@@ -190,6 +192,13 @@ app.MapGet("/api/courses", async (CourseService service) =>
 {
     var courses = await service.GetAllAsync();
     return Results.Ok(courses);
+});
+
+// GET /api/courses/count
+app.MapGet("/api/courses/count", async (CourseService service) =>
+{
+    var count = await service.GetCountAsync();
+    return Results.Ok(new { count });
 });
 
 // GET /api/courses/{id}

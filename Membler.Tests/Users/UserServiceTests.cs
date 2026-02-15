@@ -12,6 +12,7 @@ public class UserServiceTests
     private readonly Mock<IUserRepository> _usersMock;
     private readonly Mock<IInstructorRepository> _instructorsMock;
     private readonly Mock<IExpertiseRepository> _expertisesMock;
+    private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly UserService _sut;
 
     public UserServiceTests()
@@ -19,7 +20,13 @@ public class UserServiceTests
         _usersMock = new Mock<IUserRepository>();
         _instructorsMock = new Mock<IInstructorRepository>();
         _expertisesMock = new Mock<IExpertiseRepository>();
-        _sut = new UserService(_usersMock.Object, _instructorsMock.Object, _expertisesMock.Object);
+        _unitOfWorkMock = new Mock<IUnitOfWork>();
+        var txMock = new Mock<ITransaction>();
+        txMock.Setup(t => t.CommitAsync(It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+        txMock.Setup(t => t.RollbackAsync(It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+        txMock.Setup(t => t.DisposeAsync()).Returns(ValueTask.CompletedTask);
+        _unitOfWorkMock.Setup(u => u.BeginTransactionAsync(It.IsAny<CancellationToken>())).ReturnsAsync(txMock.Object);
+        _sut = new UserService(_usersMock.Object, _instructorsMock.Object, _expertisesMock.Object, _unitOfWorkMock.Object);
     }
 
     [Fact]

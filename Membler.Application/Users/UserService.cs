@@ -13,12 +13,14 @@ public class UserService
     private readonly IUserRepository _users;
     private readonly IInstructorRepository _instructors;
     private readonly IExpertiseRepository _expertises;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public UserService(IUserRepository users, IInstructorRepository instructors, IExpertiseRepository expertises)
+    public UserService(IUserRepository users, IInstructorRepository instructors, IExpertiseRepository expertises, IUnitOfWork unitOfWork)
     {
         _users = users;
         _instructors = instructors;
         _expertises = expertises;
+        _unitOfWork = unitOfWork;
     }
 
     // HÄMTA EN ANVÄNDARE MED ID
@@ -61,44 +63,53 @@ public class UserService
     // SKAPA NY ANVÄNDARE OCH EVENTUELLT LÄRARE
     public async Task<UserDto> CreateAsync(CreateUserRequest request)
     {
-        var user = new UserEntity
+        await using var tx = await _unitOfWork.BeginTransactionAsync();
+        try
         {
-            Id = Guid.NewGuid(),
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            Email = request.Email,
-            CreatedAt = DateTime.UtcNow
-        };
-
-        await _users.AddAsync(user);
-
-        // om användaren ska vara lärare
-        if (request.IsInstructor)
-        {
-            var expertiseList = request.ExpertiseIds?.Count > 0
-                ? await _expertises.GetByIdsAsync(request.ExpertiseIds)
-                : new List<ExpertiseEntity>();
-            var instructor = new InstructorEntity
+            var user = new UserEntity
             {
-                UserId = user.Id,
+                Id = Guid.NewGuid(),
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Email = request.Email,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await _users.AddAsync(user);
+
+            if (request.IsInstructor)
+            {
+                var expertiseList = request.ExpertiseIds?.Count > 0
+                    ? await _expertises.GetByIdsAsync(request.ExpertiseIds)
+                    : new List<ExpertiseEntity>();
+                var instructor = new InstructorEntity
+                {
+                    UserId = user.Id,
+                    Bio = request.Bio
+                };
+                foreach (var e in expertiseList)
+                    instructor.Expertises.Add(e);
+
+                await _instructors.AddAsync(instructor);
+            }
+
+            await tx.CommitAsync();
+            return new UserDto
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                CreatedAt = user.CreatedAt,
+                IsInstructor = request.IsInstructor,
                 Bio = request.Bio
             };
-            foreach (var e in expertiseList)
-                instructor.Expertises.Add(e);
-
-            await _instructors.AddAsync(instructor);
         }
-
-        return new UserDto
+        catch
         {
-            Id = user.Id,
-            Email = user.Email,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            CreatedAt = user.CreatedAt,
-            IsInstructor = request.IsInstructor,
-            Bio = request.Bio
-        };
+            await tx.RollbackAsync();
+            throw;
+        }
     }
 
     // UPPDATERA EN ANVÄNDARE
