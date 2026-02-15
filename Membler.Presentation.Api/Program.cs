@@ -3,6 +3,7 @@ using Membler.Application.DTO;
 using Membler.Application.CourseOfferings;
 using Membler.Application.Courses;
 using Membler.Application.Enrollments;
+using Membler.Application.Expertise;
 using Membler.Application.Instructors;
 using Membler.Application.Users;
 
@@ -31,8 +32,11 @@ builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<ICourseOfferingRepository, CourseOfferingRepository>();
 // ENROLLMENT
 builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
+// EXPERTISE
+builder.Services.AddScoped<IExpertiseRepository, ExpertiseRepository>();
 
 builder.Services.AddScoped<CourseService>();
+builder.Services.AddScoped<ExpertiseService>();
 builder.Services.AddScoped<EnrollmentService>();
 builder.Services.AddScoped<CourseOfferingService>();
 builder.Services.AddScoped<InstructorService>();
@@ -142,6 +146,41 @@ app.MapPut("/api/instructors/{userId:guid}", async (InstructorService service, G
 app.MapDelete("/api/instructors/{userId:guid}", async (InstructorService service, Guid userId) =>
 {
     var deleted = await service.DeleteAsync(userId);
+    return deleted ? Results.NoContent() : Results.NotFound();
+});
+
+// GET /api/expertises
+app.MapGet("/api/expertises", async (ExpertiseService service) =>
+{
+    var list = await service.GetAllAsync();
+    return Results.Ok(list);
+});
+
+// GET /api/expertises/{id}
+app.MapGet("/api/expertises/{id:guid}", async (ExpertiseService service, Guid id) =>
+{
+    var item = await service.GetByIdAsync(id);
+    return item is null ? Results.NotFound() : Results.Ok(item);
+});
+
+// POST /api/expertises
+app.MapPost("/api/expertises", async (ExpertiseService service, CreateExpertiseRequest request) =>
+{
+    var created = await service.CreateAsync(request);
+    return Results.Created($"/api/expertises/{created.Id}", created);
+});
+
+// PUT /api/expertises/{id}
+app.MapPut("/api/expertises/{id:guid}", async (ExpertiseService service, Guid id, ExpertiseDto request) =>
+{
+    var updated = await service.UpdateAsync(id, request);
+    return updated is null ? Results.NotFound() : Results.Ok(updated);
+});
+
+// DELETE /api/expertises/{id}
+app.MapDelete("/api/expertises/{id:guid}", async (ExpertiseService service, Guid id) =>
+{
+    var deleted = await service.DeleteAsync(id);
     return deleted ? Results.NoContent() : Results.NotFound();
 });
 

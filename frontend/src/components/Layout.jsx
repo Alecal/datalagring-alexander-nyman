@@ -10,16 +10,19 @@ function Layout() {
           </Link>
           <nav className="flex gap-6">
             <Link to="/users" className="text-slate-600 hover:text-slate-900 font-medium">
-              Users
+              Användare
             </Link>
             <Link to="/courses" className="text-slate-600 hover:text-slate-900 font-medium">
-              Courses
+              Kurser
             </Link>
             <Link to="/instructors" className="text-slate-600 hover:text-slate-900 font-medium">
-              Lärare
+              Visa lärare
             </Link>
             <Link to="/course-offerings" className="text-slate-600 hover:text-slate-900 font-medium">
               Kurstillfällen
+            </Link>
+            <Link to="/expertises" className="text-slate-600 hover:text-slate-900 font-medium">
+              Expertiser
             </Link>
           </nav>
         </div>

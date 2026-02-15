@@ -117,16 +117,18 @@ function CourseOfferings() {
   if (error) return <p className="text-red-600">{error}</p>
 
   return (
-    <div>
+    <div className="max-w-2xl">
       <h1 className="text-3xl font-bold text-slate-800 mb-2">Kurstillfällen</h1>
-      <p className="text-slate-600 mb-6">Lista och hantera kurstillfällen.</p>
+      <p className="text-slate-600 mb-8">
+        Ett kurstillfälle är en genomförd instans av en kurs: du väljer kurs, lärare, datum och max antal platser. Deltagare registreras sedan via kursregistreringar.
+      </p>
 
       {showCreateForm ? (
-        <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm mb-6">
+        <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm mb-8">
           <h2 className="text-lg font-semibold text-slate-800 mb-4">Skapa kurstillfälle</h2>
-          <form onSubmit={handleCreate} className="flex flex-col gap-4 max-w-md">
+          <form onSubmit={handleCreate} className="flex flex-col gap-4">
             <div>
-              <label htmlFor="courseId" className="block text-sm font-medium text-slate-700 mb-1">Kurs</label>
+              <label htmlFor="courseId" className="block text-sm font-medium text-slate-700 mb-1">Vilken kurs?</label>
               <select
                 id="courseId"
                 required
@@ -140,11 +142,11 @@ function CourseOfferings() {
                 ))}
               </select>
               {courses.length === 0 && (
-                <p className="mt-1 text-sm text-amber-600">Inga kurser. Gå till Courses och skapa minst en kurs först.</p>
+                <p className="mt-1 text-sm text-amber-600">Inga kurser. Gå till Kurser och skapa minst en kurs först.</p>
               )}
             </div>
             <div>
-              <label htmlFor="instructorId" className="block text-sm font-medium text-slate-700 mb-1">Lärare</label>
+              <label htmlFor="instructorId" className="block text-sm font-medium text-slate-700 mb-1">Vilken lärare håller tillfället?</label>
               <select
                 id="instructorId"
                 required
@@ -160,11 +162,11 @@ function CourseOfferings() {
                 ))}
               </select>
               {instructors.length === 0 && (
-                <p className="mt-1 text-sm text-amber-600">Inga lärare. Lägg till användare och registrera som lärare (via API eller Users) först.</p>
+                <p className="mt-1 text-sm text-amber-600">Inga lärare. Se Visa lärare för att se registrerade lärare.</p>
               )}
             </div>
             <div>
-              <label htmlFor="maxCapacity" className="block text-sm font-medium text-slate-700 mb-1">Max antal platser</label>
+              <label htmlFor="maxCapacity" className="block text-sm font-medium text-slate-700 mb-1">Max antal deltagare (platser)</label>
               <input
                 id="maxCapacity"
                 type="number"
@@ -175,7 +177,7 @@ function CourseOfferings() {
               />
             </div>
             <div>
-              <label htmlFor="startDate" className="block text-sm font-medium text-slate-700 mb-1">Startdatum</label>
+              <label htmlFor="startDate" className="block text-sm font-medium text-slate-700 mb-1">När börjar tillfället?</label>
               <input
                 id="startDate"
                 type="date"
@@ -186,7 +188,7 @@ function CourseOfferings() {
               />
             </div>
             <div>
-              <label htmlFor="endDate" className="block text-sm font-medium text-slate-700 mb-1">Slutdatum</label>
+              <label htmlFor="endDate" className="block text-sm font-medium text-slate-700 mb-1">När slutar tillfället?</label>
               <input
                 id="endDate"
                 type="date"
@@ -196,40 +198,44 @@ function CourseOfferings() {
                 className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800"
               />
             </div>
-            {submitError && <p className="text-sm text-red-600">{submitError}</p>}
-            <div className="flex gap-2">
+            {submitError && <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-700">{submitError}</p>}
+            <div className="flex flex-wrap gap-3">
               <button
                 type="submit"
                 disabled={submitting}
-                className="px-4 py-2 rounded-lg font-medium bg-slate-800 text-white hover:bg-slate-700 disabled:opacity-50"
+                className="rounded-lg bg-slate-800 px-4 py-2 font-medium text-white hover:bg-slate-700 disabled:opacity-50"
               >
-                {submitting ? 'Skapar…' : 'Skapa'}
+                {submitting ? 'Skapar…' : 'Skapa kurstillfälle'}
               </button>
               <button
                 type="button"
                 onClick={() => { setShowCreateForm(false); setSubmitError(null); setForm(emptyForm); }}
-                className="px-4 py-2 rounded-lg font-medium bg-slate-200 text-slate-700 hover:bg-slate-300"
+                className="rounded-lg border border-slate-300 bg-white px-4 py-2 font-medium text-slate-700 hover:bg-slate-50"
               >
                 Avbryt
               </button>
             </div>
           </form>
-        </div>
+        </section>
       ) : (
         <button
           type="button"
           onClick={() => setShowCreateForm(true)}
-          className="mb-6 px-4 py-2 rounded-lg font-medium bg-slate-800 text-white hover:bg-slate-700"
+          className="mb-8 rounded-lg bg-slate-800 px-4 py-2 font-medium text-white hover:bg-slate-700"
         >
           Skapa kurstillfälle
         </button>
       )}
 
-      <div className="flex flex-col gap-4">
+      <section className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+        {offerings.length === 0 && !showCreateForm ? (
+          <p className="p-8 text-slate-500">Inga kurstillfällen än.</p>
+        ) : (
+          <ul className="divide-y divide-slate-200">
         {offerings.map((o) => {
           const oId = o.id ?? o.Id
           return (
-          <div key={oId} className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+          <li key={oId} className="p-4">
             {editingId === oId ? (
               <form onSubmit={handleUpdate} className="flex flex-col gap-3">
                 <select
@@ -271,12 +277,12 @@ function CourseOfferings() {
                   onChange={(e) => setEditForm((f) => ({ ...f, endDate: e.target.value }))}
                   className="rounded-lg border border-slate-300 px-3 py-2"
                 />
-                {submitError && <p className="text-sm text-red-600">{submitError}</p>}
-                <div className="flex gap-2">
-                  <button type="submit" disabled={submitting} className="px-3 py-1 rounded bg-slate-800 text-white text-sm">
+                {submitError && <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-700">{submitError}</p>}
+                <div className="flex flex-wrap gap-3">
+                  <button type="submit" disabled={submitting} className="rounded-lg bg-slate-800 px-4 py-2 font-medium text-white text-sm hover:bg-slate-700 disabled:opacity-50">
                     Spara
                   </button>
-                  <button type="button" onClick={() => { setEditingId(null); setSubmitError(null); }} className="px-3 py-1 rounded bg-slate-200 text-slate-700 text-sm">
+                  <button type="button" onClick={() => { setEditingId(null); setSubmitError(null); }} className="rounded-lg border border-slate-300 bg-white px-4 py-2 font-medium text-slate-700 text-sm hover:bg-slate-50">
                     Avbryt
                   </button>
                 </div>
@@ -284,25 +290,31 @@ function CourseOfferings() {
             ) : (
               <>
                 <p className="font-semibold text-slate-800">{o.courseName ?? o.CourseName ?? 'Kurs'}</p>
-                <p className="text-sm text-slate-600">Lärare: {o.instructorName ?? o.InstructorName ?? '–'}</p>
-                <p className="text-sm text-slate-600">{(o.startDate ?? o.StartDate) ?? ''} – {(o.endDate ?? o.EndDate) ?? ''}, max {o.maxCapacity ?? o.MaxCapacity ?? 0} platser</p>
-                <div className="mt-2 flex gap-2">
-                  <button type="button" onClick={() => startEdit(o)} className="text-sm text-slate-600 hover:text-slate-900 underline">
+                <p className="mt-1 text-sm text-slate-600">
+                  <span className="text-slate-500">Lärare:</span> {o.instructorName ?? o.InstructorName ?? '–'}
+                </p>
+                <p className="mt-0.5 text-sm text-slate-600">
+                  <span className="text-slate-500">Period:</span> {(o.startDate ?? o.StartDate) ?? '–'} till {(o.endDate ?? o.EndDate) ?? '–'}
+                </p>
+                <p className="mt-0.5 text-sm text-slate-600">
+                  <span className="text-slate-500">Platser:</span> max {o.maxCapacity ?? o.MaxCapacity ?? 0} deltagare
+                </p>
+                <div className="mt-2 flex gap-3">
+                  <button type="button" onClick={() => startEdit(o)} className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50">
                     Redigera
                   </button>
-                  <button type="button" onClick={() => handleDelete(oId)} className="text-sm text-red-600 hover:text-red-800 underline">
+                  <button type="button" onClick={() => handleDelete(oId)} className="text-sm font-medium text-red-600 hover:text-red-800">
                     Ta bort
                   </button>
                 </div>
               </>
             )}
-          </div>
+          </li>
           )
         })}
-      </div>
-      {offerings.length === 0 && !showCreateForm && (
-        <p className="text-slate-500">Inga kurstillfällen än.</p>
-      )}
+          </ul>
+        )}
+      </section>
     </div>
   )
 }

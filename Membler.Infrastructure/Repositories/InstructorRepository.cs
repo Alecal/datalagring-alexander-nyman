@@ -17,6 +17,7 @@ public class InstructorRepository : IInstructorRepository
     {
         return await _dbContext.Instructors
             .Include(i => i.User)
+            .Include(i => i.Expertises)
             .FirstOrDefaultAsync(i => i.UserId == userId, cancellationToken);
     }
 
@@ -24,6 +25,7 @@ public class InstructorRepository : IInstructorRepository
     {
         return await _dbContext.Instructors
             .Include(i => i.User)
+            .Include(i => i.Expertises)
             .ToListAsync(cancellationToken);
     }
 

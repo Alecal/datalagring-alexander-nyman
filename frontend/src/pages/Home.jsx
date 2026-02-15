@@ -2,21 +2,35 @@ import { Link } from 'react-router-dom'
 
 function Home() {
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-slate-800 mb-2">Welcome</h1>
-      <p className="text-slate-600 mb-8">Get started with Users and Courses.</p>
-      <div className="flex gap-4">
+    <div className="max-w-2xl">
+      <h1 className="text-3xl font-bold text-slate-800 mb-2">Välkommen</h1>
+      <p className="text-slate-600 mb-8">
+        Här hanterar du användare, kurser, lärare och kurstillfällen.
+      </p>
+      <div className="flex flex-wrap gap-3">
         <Link
           to="/users"
-          className="inline-block px-5 py-3 bg-slate-800 text-white font-medium rounded-lg hover:bg-slate-700"
+          className="rounded-lg bg-slate-800 px-4 py-2 font-medium text-white hover:bg-slate-700"
         >
-          Users
+          Användare
         </Link>
         <Link
           to="/courses"
-          className="inline-block px-5 py-3 bg-slate-800 text-white font-medium rounded-lg hover:bg-slate-700"
+          className="rounded-lg border border-slate-300 bg-white px-4 py-2 font-medium text-slate-700 hover:bg-slate-50"
         >
-          Courses
+          Kurser
+        </Link>
+        <Link
+          to="/instructors"
+          className="rounded-lg border border-slate-300 bg-white px-4 py-2 font-medium text-slate-700 hover:bg-slate-50"
+        >
+          Visa lärare
+        </Link>
+        <Link
+          to="/course-offerings"
+          className="rounded-lg border border-slate-300 bg-white px-4 py-2 font-medium text-slate-700 hover:bg-slate-50"
+        >
+          Kurstillfällen
         </Link>
       </div>
     </div>

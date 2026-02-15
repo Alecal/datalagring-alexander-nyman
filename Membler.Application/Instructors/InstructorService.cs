@@ -8,11 +8,13 @@ public class InstructorService
 {
     private readonly IInstructorRepository _instructors;
     private readonly IUserRepository _users;
+    private readonly IExpertiseRepository _expertises;
 
-    public InstructorService(IInstructorRepository instructors, IUserRepository users)
+    public InstructorService(IInstructorRepository instructors, IUserRepository users, IExpertiseRepository expertises)
     {
         _instructors = instructors;
         _users = users;
+        _expertises = expertises;
     }
 
     public async Task<InstructorDto?> GetByIdAsync(Guid userId)
@@ -54,6 +56,16 @@ public class InstructorService
         var entity = await _instructors.GetByIdAsync(userId);
         if (entity is null) return null;
         entity.Bio = request.Bio;
+        if (request.ExpertiseIds is not null)
+        {
+            entity.Expertises.Clear();
+            if (request.ExpertiseIds.Count > 0)
+            {
+                var expertiseList = await _expertises.GetByIdsAsync(request.ExpertiseIds);
+                foreach (var e in expertiseList)
+                    entity.Expertises.Add(e);
+            }
+        }
         await _instructors.UpdateAsync(entity);
         return MapToDto(entity);
     }
@@ -73,7 +85,8 @@ public class InstructorService
             UserId = i.UserId,
             FirstName = i.User.FirstName,
             LastName = i.User.LastName,
-            Bio = i.Bio
+            Bio = i.Bio,
+            Expertises = i.Expertises.Select(e => new ExpertiseDto { Id = e.Id, Subject = e.Subject }).ToList()
         };
     }
 }

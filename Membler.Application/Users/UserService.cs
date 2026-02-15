@@ -12,11 +12,13 @@ public class UserService
 {
     private readonly IUserRepository _users;
     private readonly IInstructorRepository _instructors;
+    private readonly IExpertiseRepository _expertises;
 
-    public UserService(IUserRepository users, IInstructorRepository instructors)
+    public UserService(IUserRepository users, IInstructorRepository instructors, IExpertiseRepository expertises)
     {
         _users = users;
         _instructors = instructors;
+        _expertises = expertises;
     }
 
     // HÄMTA EN ANVÄNDARE MED ID
@@ -70,14 +72,19 @@ public class UserService
 
         await _users.AddAsync(user);
 
-        // om avändaren ska vara lärare
+        // om användaren ska vara lärare
         if (request.IsInstructor)
         {
+            var expertiseList = request.ExpertiseIds?.Count > 0
+                ? await _expertises.GetByIdsAsync(request.ExpertiseIds)
+                : new List<ExpertiseEntity>();
             var instructor = new InstructorEntity
             {
                 UserId = user.Id,
                 Bio = request.Bio
             };
+            foreach (var e in expertiseList)
+                instructor.Expertises.Add(e);
 
             await _instructors.AddAsync(instructor);
         }

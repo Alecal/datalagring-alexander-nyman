@@ -3,6 +3,9 @@ import { get, post } from '../api/client'
 
 const emptyCourseForm = { name: '', description: '' }
 
+const inputClass = 'w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500'
+const labelClass = 'block text-sm font-medium text-slate-700 mb-1'
+
 function Courses() {
   const [courses, setCourses] = useState([])
   const [loading, setLoading] = useState(true)
@@ -42,84 +45,84 @@ function Courses() {
     }
   }
 
-  if (loading) return <p className="text-slate-600">Loading…</p>
+  if (loading) return <p className="text-slate-600">Laddar…</p>
   if (error) return <p className="text-red-600">{error}</p>
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-slate-800 mb-2">Courses</h1>
-      <p className="text-slate-600 mb-6">Course list and management.</p>
+    <div className="max-w-2xl">
+      <h1 className="text-3xl font-bold text-slate-800 mb-2">Kurser</h1>
+      <p className="text-slate-600 mb-8">Lista och hantera kurser. Skapa kurser som sedan kan användas för kurstillfällen.</p>
 
       {showCreateForm ? (
-        <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm mb-6">
+        <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm mb-8">
           <h2 className="text-lg font-semibold text-slate-800 mb-4">Skapa kurs</h2>
-          <form onSubmit={handleCreateCourse} className="flex flex-col gap-4 max-w-md">
+          <form onSubmit={handleCreateCourse} className="flex flex-col gap-4">
             <div>
-              <label htmlFor="courseName" className="block text-sm font-medium text-slate-700 mb-1">Namn</label>
+              <label htmlFor="courseName" className={labelClass}>Namn</label>
               <input
                 id="courseName"
                 type="text"
                 required
                 value={form.name}
                 onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
+                className={inputClass}
               />
             </div>
             <div>
-              <label htmlFor="courseDescription" className="block text-sm font-medium text-slate-700 mb-1">Beskrivning (valfritt)</label>
+              <label htmlFor="courseDescription" className={labelClass}>Beskrivning (valfritt)</label>
               <textarea
                 id="courseDescription"
                 rows={3}
                 value={form.description}
                 onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
+                className={inputClass}
               />
             </div>
-            {submitError && <p className="text-sm text-red-600">{submitError}</p>}
-            <div className="flex gap-2">
+            {submitError && <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-700">{submitError}</p>}
+            <div className="flex flex-wrap gap-3">
               <button
                 type="submit"
                 disabled={submitting}
-                className="px-4 py-2 rounded-lg font-medium bg-slate-800 text-white hover:bg-slate-700 disabled:opacity-50"
+                className="rounded-lg bg-slate-800 px-4 py-2 font-medium text-white hover:bg-slate-700 disabled:opacity-50"
               >
                 {submitting ? 'Skapar…' : 'Skapa kurs'}
               </button>
               <button
                 type="button"
                 onClick={() => { setShowCreateForm(false); setSubmitError(null); setForm(emptyCourseForm); }}
-                className="px-4 py-2 rounded-lg font-medium bg-slate-200 text-slate-700 hover:bg-slate-300"
+                className="rounded-lg border border-slate-300 bg-white px-4 py-2 font-medium text-slate-700 hover:bg-slate-50"
               >
                 Avbryt
               </button>
             </div>
           </form>
-        </div>
+        </section>
       ) : (
         <button
           type="button"
           onClick={() => setShowCreateForm(true)}
-          className="mb-6 px-4 py-2 rounded-lg font-medium bg-slate-800 text-white hover:bg-slate-700"
+          className="mb-8 rounded-lg bg-slate-800 px-4 py-2 font-medium text-white hover:bg-slate-700"
         >
           Skapa kurs
         </button>
       )}
 
-      <div className="flex flex-col gap-4">
-        {courses.map((course) => (
-          <div
-            key={course.id}
-            className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm"
-          >
-            <p className="font-semibold text-slate-800">{course.name}</p>
-            {course.description && (
-              <p className="mt-1 text-sm text-slate-600">{course.description}</p>
-            )}
-          </div>
-        ))}
-      </div>
-      {courses.length === 0 && (
-        <p className="text-slate-500">No courses yet.</p>
-      )}
+      <section className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+        {courses.length === 0 ? (
+          <p className="p-8 text-slate-500">Inga kurser än.</p>
+        ) : (
+          <ul className="divide-y divide-slate-200">
+            {courses.map((course) => (
+              <li key={course.id} className="p-4">
+                <p className="font-semibold text-slate-800">{course.name}</p>
+                {course.description && (
+                  <p className="mt-1 text-sm text-slate-600">{course.description}</p>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </div>
   )
 }
