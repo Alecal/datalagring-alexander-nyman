@@ -1,4 +1,4 @@
-﻿using Membler.Application.DTO;
+using Membler.Application.DTO;
 using Membler.Domain.Entities;
 using Membler.Domain.Interfaces;
 
@@ -57,7 +57,7 @@ public class UserService
     }
 
     // SKAPA NY ANVÄNDARE OCH EVENTUELLT LÄRARE
-    public async Task<UserDto> CreateAsync(UserDto request)
+    public async Task<UserDto> CreateAsync(CreateUserRequest request)
     {
         var user = new UserEntity
         {

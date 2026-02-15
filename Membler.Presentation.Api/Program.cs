@@ -1,4 +1,4 @@
-﻿using Membler.Application.DTO;
+using Membler.Application.DTO;
 
 using Membler.Application.Courses;
 using Membler.Application.Users;
@@ -21,6 +21,16 @@ builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<CourseService>();
 builder.Services.AddScoped<UserService>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddOpenApi();
 
 builder.Services.AddDbContext<MemblerDbContext>(options =>
@@ -32,6 +42,8 @@ builder.Services.AddDbContext<MemblerDbContext>(options =>
 });
 
 var app = builder.Build();
+
+app.UseCors();
 
 if (app.Environment.IsDevelopment())
 {
@@ -50,7 +62,7 @@ app.MapGet("/api/users", async (UserService service) =>
 
 
 // POST /api/users
-app.MapPost("/api/users", async (UserService service, UserDto request) =>
+app.MapPost("/api/users", async (UserService service, CreateUserRequest request) =>
 {
     var created = await service.CreateAsync(request);
     return Results.Created($"/api/users/{created.Id}", created);
