@@ -1,5 +1,6 @@
 using Membler.Application.DTO;
 
+using Membler.Application.CourseOfferings;
 using Membler.Application.Courses;
 using Membler.Application.Users;
 
@@ -17,8 +18,11 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IInstructorRepository, InstructorRepository>();
 // COURSE
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+// COURSE OFFERING
+builder.Services.AddScoped<ICourseOfferingRepository, CourseOfferingRepository>();
 
 builder.Services.AddScoped<CourseService>();
+builder.Services.AddScoped<CourseOfferingService>();
 builder.Services.AddScoped<UserService>();
 
 builder.Services.AddCors(options =>
@@ -124,6 +128,37 @@ app.MapPut("/api/courses/{id:guid}", async (CourseService service, Guid id, Cour
 
 // DELETE /api/courses/{id}
 app.MapDelete("/api/courses/{id:guid}", async (CourseService service, Guid id) =>
+{
+    var deleted = await service.DeleteAsync(id);
+    return deleted ? Results.NoContent() : Results.NotFound();
+});
+
+//                        COURSE OFFERINGS API ENDPOINTS
+app.MapGet("/api/course-offerings", async (CourseOfferingService service) =>
+{
+    var list = await service.GetAllAsync();
+    return Results.Ok(list);
+});
+
+app.MapGet("/api/course-offerings/{id:guid}", async (CourseOfferingService service, Guid id) =>
+{
+    var offering = await service.GetByIdAsync(id);
+    return offering is null ? Results.NotFound() : Results.Ok(offering);
+});
+
+app.MapPost("/api/course-offerings", async (CourseOfferingService service, CreateCourseOfferingRequest request) =>
+{
+    var created = await service.CreateAsync(request);
+    return Results.Created($"/api/course-offerings/{created.Id}", created);
+});
+
+app.MapPut("/api/course-offerings/{id:guid}", async (CourseOfferingService service, Guid id, CourseOfferingDto request) =>
+{
+    var updated = await service.UpdateAsync(id, request);
+    return updated is null ? Results.NotFound() : Results.Ok(updated);
+});
+
+app.MapDelete("/api/course-offerings/{id:guid}", async (CourseOfferingService service, Guid id) =>
 {
     var deleted = await service.DeleteAsync(id);
     return deleted ? Results.NoContent() : Results.NotFound();
