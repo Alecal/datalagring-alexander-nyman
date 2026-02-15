@@ -2,15 +2,23 @@ using Membler.Application.DTO;
 
 using Membler.Application.CourseOfferings;
 using Membler.Application.Courses;
+using Membler.Application.Instructors;
 using Membler.Application.Users;
 
 using Membler.Domain.Interfaces;
 using Membler.Infrastructure.Data;
 using Membler.Infrastructure.Repositories;
 
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// JSON med camelCase så att frontend får id, name, userId osv.
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+});
 
 // USER
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -23,6 +31,7 @@ builder.Services.AddScoped<ICourseOfferingRepository, CourseOfferingRepository>(
 
 builder.Services.AddScoped<CourseService>();
 builder.Services.AddScoped<CourseOfferingService>();
+builder.Services.AddScoped<InstructorService>();
 builder.Services.AddScoped<UserService>();
 
 builder.Services.AddCors(options =>
@@ -96,6 +105,12 @@ app.MapDelete("/api/users/{id:guid}", async (UserService service, Guid id) =>
     return deleted ? Results.NoContent() : Results.NotFound();
 });
 
+// GET /api/instructors
+app.MapGet("/api/instructors", async (InstructorService service) =>
+{
+    var list = await service.GetAllAsync();
+    return Results.Ok(list);
+});
 
 //                        COURSES API ENDPOINTS
 // GET /api/courses

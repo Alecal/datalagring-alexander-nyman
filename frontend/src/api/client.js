@@ -18,3 +18,23 @@ export async function post(path, body) {
   if (!res.ok) throw new Error(await res.text())
   return res.json()
 }
+
+export async function put(path, body) {
+  const res = await fetch(path, {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  })
+  if (!res.ok) throw new Error(await res.text())
+  return res.json()
+}
+
+export async function del(path) {
+  const res = await fetch(path, { method: 'DELETE' })
+  if (!res.ok) throw new Error(await res.text())
+  if (res.status === 204) return null
+  return res.json()
+}

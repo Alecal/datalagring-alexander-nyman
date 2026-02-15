@@ -15,6 +15,9 @@ function Layout() {
             <Link to="/courses" className="text-slate-600 hover:text-slate-900 font-medium">
               Courses
             </Link>
+            <Link to="/course-offerings" className="text-slate-600 hover:text-slate-900 font-medium">
+              Kurstillfällen
+            </Link>
           </nav>
         </div>
       </header>
